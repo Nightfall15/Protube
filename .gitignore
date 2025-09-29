@@ -1,5 +1,3 @@
 .vscode/
 .idea/
-*.env
-/tooling/videoGrabber/store
 /tooling/videoGrabber/store
