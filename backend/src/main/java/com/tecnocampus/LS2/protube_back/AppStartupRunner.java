@@ -31,14 +31,13 @@ public class AppStartupRunner implements ApplicationRunner {
         final var rootDir = env.getProperty("pro_tube.store.dir");
         this.rootPath = Paths.get(rootDir);
         loadInitialData = env.getProperty("pro_tube.load_initial_data", Boolean.class);
-    }
 
+
+    }
 
 
     @Override
     public void run(ApplicationArguments args) throws Exception {
         // Should your backend perform any task during the bootstrap, do it here
-        videoService.uploadAllVideos(rootPath);
-        LOG.info("Todos los vídeos han sido subidos a la base de datos.");
     }
 }
