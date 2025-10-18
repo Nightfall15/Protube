@@ -52,8 +52,10 @@ public class VideoService {
         return videoFileRepository.findAll().stream()
                 .map(video -> {
                     VideoDTO dto = new VideoDTO();
-                    dto.setNombre(video.getTitle());
-                    dto.setUrl("https://localhost:8080/api/videos/media/"+video.getId()+".mp4"); // Ajusta la URL según tu endpoint de streaming
+                    dto.setTitle(video.getTitle());
+                    dto.setDescription(video.getDescription());
+                    dto.setThumbnailUrl("https://localhost:8080/api/videos/thumbnail/"+video.getId()); // Ajusta la URL según tu endpoint de miniaturas
+                    dto.setVideoUrl("http://localhost:8080/api/videos/stream/"+video.getId()); // Ajusta la URL según tu endpoint de streaming
                     return dto;
                 })
                 .collect(Collectors.toList());
@@ -92,6 +94,7 @@ public class VideoService {
                 video.setId(Long.parseLong(files.fileName));
                 video.setTitle(jsonNode.get("title").asText());
                 video.setMp4Path(files.mp4Path);
+                video.setJsonPath(files.jsonPath);
                 video.setThumbnailPath(files.thumbnailPath);
                 video.setDescription(jsonNode.get("meta").get("description").asText());
                 video.setTags(objectMapper.convertValue(jsonNode.get("tags"), ArrayList.class));
@@ -101,19 +104,13 @@ public class VideoService {
         }
     }
 
+    @Setter
+    @Getter
     private class VideoFiles {
 
-        @Getter
-        @Setter
         private String fileName;
-        @Getter
-        @Setter
         private String mp4Path;
-        @Getter
-        @Setter
         private String thumbnailPath;
-        @Getter
-        @Setter
         private String jsonPath;
 
     }

@@ -5,7 +5,7 @@
       <env name="ENV_PROTUBE_GOOGLE_CLIENT_SECRET" value="" />
     </envs>
     <option name="envFilePaths">
-      <option value="$PROJECT_DIR$/../../../../../.env.env" />
+      <option value="$PROJECT_DIR$/../../../../env.env" />
     </option>
     <module name="protube-back" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.tecnocampus.LS2.protube_back.ProtubeBackApplication" />
