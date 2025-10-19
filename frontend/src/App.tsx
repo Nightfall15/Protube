@@ -14,9 +14,7 @@ function App() {
 
 function ContentApp() {
   const { videos, loading } = useAllVideos();
-  // console.log('Loading:', loading);
   console.log('Videos array:', videos);
-  // console.log('Videos length:', videos?.length);
 
   if (loading === 'loading' || loading === 'idle') {
     return <div>Loading...</div>;
@@ -28,16 +26,19 @@ function ContentApp() {
 
   return (
     <div>
-      {videos.map((video) => (
-        <div key={video.id}>
-          <h3>{video.title || `Video ${video.id}`}</h3>
-          {video.description && <p>{video.description}</p>}
-          <video width="320" height="240" controls poster={`/api/videos/thumbnail/${video.id}`}>
-            <source src={`/api/videos/stream/${video.id}`} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      ))}
+      {videos.map((video, index) => {
+        const videoId = video.id || index + 1;
+        return (
+          <div key={videoId}>
+            <h3>{video.title || `Video ${videoId}`}</h3>
+            {video.description && <p>{video.description}</p>}
+            <video width="320" height="240" controls poster={`/api/videos/thumbnail/${videoId}`}>
+              <source src={`/api/videos/stream/${videoId}`} type="video/mp4" />
+              Your browser does not support the video tag.
+            </video>
+          </div>
+        );
+      })}
     </div>
   );
 }
