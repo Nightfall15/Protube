@@ -85,6 +85,44 @@
   margin-top: 20px;
 }
 
+/* Add this under .App-header */
+.search-form {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.search-input {
+  border: none;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 1rem;
+}
+
+.search-button {
+  border: none;
+  background: #667eea;
+  color: white;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.3s;
+}
+
+.search-button:hover {
+  background: #5a67d8;
+}
+
+.search-title {
+  text-align: center;
+  color: white;
+  margin-top: 20px;
+}
+
 .App-logo {
   height: 60px;
   width: auto;
