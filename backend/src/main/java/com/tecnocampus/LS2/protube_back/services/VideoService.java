@@ -52,6 +52,7 @@ public class VideoService {
         return videoFileRepository.findAll().stream()
                 .map(video -> {
                     VideoDTO dto = new VideoDTO();
+                    dto.setId(video.getId());
                     dto.setTitle(video.getTitle());
                     dto.setDescription(video.getDescription());
                     dto.setThumbnailUrl("https://localhost:8080/api/videos/thumbnail/"+video.getId()); // Ajusta la URL según tu endpoint de miniaturas

@@ -6,6 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class VideoDTO {
+    private Long id;
     private String title;
     private String description;
     private String thumbnailUrl;
