@@ -2,13 +2,31 @@
 import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
 import { useAllVideos } from './useAllVideos';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function App() {
+  const [darkMode, setDarkMode] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('darkMode');
+      return saved ? JSON.parse(saved) : false;
+    } catch {
+      return false;
+    }
+  });
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', darkMode ? 'dark' : 'light');
+    try {
+      localStorage.setItem('darkMode', JSON.stringify(darkMode));
+    } catch {
+      // ignore
+    }
+  }, [darkMode]);
+
   return (
     <BrowserRouter>
       <div className="App">
-        <Header />
+        <Header darkMode={darkMode} setDarkMode={setDarkMode} />
         <Routes>
           <Route path="/" element={<ContentApp />} />
           <Route path="/search/:query" element={<SearchResults />} />
@@ -19,7 +37,13 @@ function App() {
 }
 
 // ================= HEADER WITH SEARCH =================
-function Header() {
+function Header({
+  darkMode,
+  setDarkMode,
+}: {
+  darkMode: boolean;
+  setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
@@ -50,6 +74,17 @@ function Header() {
           🔍
         </button>
       </form>
+
+      <button
+        className="theme-toggle"
+        onClick={() => setDarkMode((s) => !s)}
+        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+        title={darkMode ? 'Light mode' : 'Dark mode'}
+      >
+        <span className="theme-icon" aria-hidden>
+          {darkMode ? '☀️' : '🌙'}
+        </span>
+      </button>
     </header>
   );
 }
@@ -88,13 +123,19 @@ function SearchResults() {
 }
 
 // ================= REUSABLE VIDEO GRID =================
-function VideoGrid({ videos }: { videos: any[] }) {
+type VideoItem = {
+  id?: number | string;
+  title?: string;
+  description?: string;
+};
+
+function VideoGrid({ videos }: { videos: VideoItem[] }) {
   return (
     <div className="video-grid">
       {videos.map((video, index) => {
         const videoId = video.id || index + 1;
         return (
-          <div key={videoId + video.title} className="video-card">
+          <div key={String(videoId) + (video.title ?? '')} className="video-card">
             <div className="video-thumbnail">
               <video
                 width="100%"
