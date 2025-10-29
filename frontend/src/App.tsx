@@ -1,5 +1,6 @@
+/* eslint-disable prettier/prettier */
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate, useParams } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
 import { useAllVideos } from './useAllVideos';
 import React, { useState } from 'react';
 
@@ -32,7 +33,9 @@ function Header() {
 
   return (
     <header className="App-header">
-      <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+      <Link to="/" className="logo-link">
+        <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+      </Link>
       <h1 className="App-title">ProTube</h1>
 
       <form onSubmit={handleSearch} className="search-form">
@@ -83,6 +86,7 @@ function SearchResults() {
     </div>
   );
 }
+
 // ================= REUSABLE VIDEO GRID =================
 function VideoGrid({ videos }: { videos: any[] }) {
   return (

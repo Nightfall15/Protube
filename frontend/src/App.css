@@ -56,6 +56,13 @@
   width: auto;
 }
 
+.logo-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  color: inherit;
+}
+
 .App-title {
   color: #333;
   margin: 0;
