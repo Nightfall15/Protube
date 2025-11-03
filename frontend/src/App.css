@@ -1,0 +1,210 @@
+/* filepath: c:\Apps\Projects\Repos\LS2-protube\frontend\src\App.css */
+:root[data-theme='light'] {
+  --bg-primary: #ffffff; /* page background */
+  --bg-secondary: #f7f8fb; /* header background */
+  --bg-card: #ffffff; /* card / search input */
+  --text-primary: #0f1724; /* main text */
+  --text-secondary: #55606a; /* secondary text */
+  --border-color: #e6eaef;
+  --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+  --accent: #2563eb; /* blue accent */
+  --accent-600: #1e40af;
+}
+
+:root[data-theme='dark'] {
+  --bg-primary: #0b0f14;
+  --bg-secondary: #0f1720;
+  --bg-card: #0f1724;
+  --text-primary: #e6eef8;
+  --text-secondary: #9aa6b2;
+  --border-color: #1f2933;
+  --shadow: 0 8px 24px rgba(2, 6, 23, 0.7);
+  --accent: #60a5fa;
+  --accent-600: #3b82f6;
+}
+
+/* Base app layout */
+.App {
+  min-height: 100vh;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  transition: background-color 250ms ease, color 250ms ease;
+}
+
+/* Header */
+.App-header {
+  background-color: var(--bg-secondary);
+  padding: 20px;
+  box-shadow: var(--shadow);
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 40px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+/* Search form */
+.search-form {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+  background: var(--bg-card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  border: 1px solid var(--border-color);
+}
+
+.search-input {
+  border: none;
+  padding: 8px 12px;
+  outline: none;
+  font-size: 1rem;
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.search-button {
+  border: none;
+  background: var(--accent);
+  color: white;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background 0.22s ease, transform 0.12s ease;
+}
+
+.search-button:hover {
+  background: var(--accent-600);
+  transform: translateY(-1px);
+}
+
+.search-title {
+  text-align: center;
+  color: var(--text-primary);
+  margin-top: 20px;
+}
+
+.App-logo {
+  height: 60px;
+  width: auto;
+}
+
+.logo-link {
+  text-decoration: none;
+  cursor: pointer;
+  display: inline-block;
+  color: inherit;
+}
+
+.App-title {
+  color: var(--text-primary);
+  margin: 0;
+  font-size: 2rem;
+}
+
+/* Video grid */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+  gap: 30px;
+  padding: 20px 40px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.video-card {
+  background: var(--bg-card);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  border: 1px solid var(--border-color);
+}
+
+.video-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 30px rgba(2,6,23,0.08);
+}
+
+.video-thumbnail {
+  width: 100%;
+  background: #000;
+}
+
+.video-player {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16/9;
+}
+
+.video-info {
+  padding: 16px;
+}
+
+.video-title {
+  margin: 0 0 8px 0;
+  font-size: 1.2rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.video-description {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.loading-spinner,
+.error-message {
+  text-align: center;
+  padding: 40px;
+  font-size: 1.5rem;
+  color: var(--text-primary);
+}
+
+.error-message {
+  background: transparent;
+  color: var(--accent-600);
+  margin: 20px;
+  border-radius: 8px;
+}
+
+/* Theme toggle button */
+.theme-toggle {
+  margin-left: 16px;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border-radius: 999px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  font-size: 18px;
+  transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.05);
+}
+
+.theme-icon {
+  display: inline-block;
+  transition: transform 300ms ease, opacity 220ms ease;
+}
+
+/* small visual difference when dark mode is active */
+:root[data-theme='dark'] .theme-icon {
+  transform: rotate(20deg) scale(1.05);
+}
+
+/* Accessibility focus */
+.theme-toggle:focus,
+.search-button:focus,
+.search-input:focus {
+  outline: 3px solid rgba(37, 99, 235, 0.12);
+  outline-offset: 2px;
+}
