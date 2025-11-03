@@ -29,6 +29,12 @@ public class VideoService {
     @Autowired
     private ObjectMapper objectMapper;
 
+    public VideoService(ObjectMapper objectMapper, IVideoFileRepository videoFileRepository) {
+        this.objectMapper = objectMapper;
+        this.videoFileRepository = videoFileRepository;
+
+    }
+
     public VideoFile save(VideoFile videoFile) {
         return videoFileRepository.save(videoFile);
     }
