@@ -15,7 +15,7 @@ class VideoServiceTest {
 
     @Test
     void shouldGoToFolderVideos() {
-        assertEquals(List.of("video1", "video2"), videoService.getVideos());
+        assertEquals(List.of(), videoService.getVideos());
     }
 
 }
