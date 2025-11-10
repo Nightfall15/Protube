@@ -1,9 +1,11 @@
 // src/pages/Register.tsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [formData, setFormData] = useState({
     email: '',
     name: '',
@@ -41,21 +43,8 @@ const Register = () => {
         throw new Error(errorText || 'Error en el registro');
       }
 
-      // Intenta parsear como JSON, si falla usa texto plano
-      const contentType = response.headers.get('content-type');
-      let data;
-
-      if (contentType && contentType.includes('application/json')) {
-        data = await response.json();
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-      } else {
-        // Si es texto plano, simplemente ignóralo
-        await response.text();
-      }
-
-      // Redirige al usuario después del registro exitoso
+      // Después del registro exitoso, hacer login automáticamente
+      await login(formData.username, formData.password);
       navigate('/');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al registrar usuario. Intenta nuevamente.');

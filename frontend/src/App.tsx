@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'reac
 import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
+import Login from './pages/Login';
 
 
 function App() {
@@ -33,6 +34,7 @@ function App() {
           <Route path="/" element={<ContentApp />} />
           <Route path="/search/:query" element={<SearchResults />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </BrowserRouter>
@@ -43,9 +45,9 @@ function App() {
 
 // ================= HEADER WITH SEARCH =================
 function Header({
-  darkMode,
-  setDarkMode,
-}: {
+                  darkMode,
+                  setDarkMode,
+                }: {
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
@@ -79,6 +81,10 @@ function Header({
           🔍
         </button>
       </form>
+
+      <button onClick={() => navigate('/login')} className="login-button">
+        Iniciar Sesión
+      </button>
 
       <button onClick={() => navigate('/register')} className="register-button">
         Registrarse

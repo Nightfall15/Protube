@@ -16,6 +16,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -49,21 +50,25 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers.frameOptions(frame -> frame.disable()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/videos/**").permitAll()
+                        .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
-                .authenticationProvider(authenticationProvider());
+                .authenticationProvider(authenticationProvider())
+                .addFilterBefore(jwtAuthFilter,  UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
+
 }
