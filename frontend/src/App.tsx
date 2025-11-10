@@ -5,6 +5,7 @@ import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import { useAuth } from './context/AuthContext';
 
 
 function App() {
@@ -53,6 +54,7 @@ function Header({
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -60,6 +62,11 @@ function Header({
       navigate(`/search/${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm('');
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -82,13 +89,25 @@ function Header({
         </button>
       </form>
 
-      <button onClick={() => navigate('/login')} className="login-button">
-        Iniciar Sesión
-      </button>
-
-      <button onClick={() => navigate('/register')} className="register-button">
-        Registrarse
-      </button>
+      {!isAuthenticated ? (
+        <>
+          <button onClick={() => navigate('/login')} className="login-button">
+            Iniciar Sesión
+          </button>
+          <button onClick={() => navigate('/register')} className="register-button">
+            Registrarse
+          </button>
+        </>
+      ) : (
+        <div className="user-menu">
+          <button className="profile-button">
+            👤 Perfil
+          </button>
+          <button onClick={handleLogout} className="logout-button">
+            Cerrar Sesión
+          </button>
+        </div>
+      )}
 
       <button
         className="theme-toggle"
