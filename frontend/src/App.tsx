@@ -3,6 +3,8 @@ import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
 import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
+import Register from './pages/Register';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -30,10 +32,13 @@ function App() {
         <Routes>
           <Route path="/" element={<ContentApp />} />
           <Route path="/search/:query" element={<SearchResults />} />
+          <Route path="/register" element={<Register />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
+
+
 }
 
 // ================= HEADER WITH SEARCH =================
@@ -74,6 +79,10 @@ function Header({
           🔍
         </button>
       </form>
+
+      <button onClick={() => navigate('/register')} className="register-button">
+        Registrarse
+      </button>
 
       <button
         className="theme-toggle"
