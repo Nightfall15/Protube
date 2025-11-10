@@ -3,6 +3,10 @@ import './App.css';
 import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
 import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
+import Register from './pages/Register';
+import Login from './pages/Login';
+import { useAuth } from './context/AuthContext';
+
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -30,22 +34,27 @@ function App() {
         <Routes>
           <Route path="/" element={<ContentApp />} />
           <Route path="/search/:query" element={<SearchResults />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
+
+
 }
 
 // ================= HEADER WITH SEARCH =================
 function Header({
-  darkMode,
-  setDarkMode,
-}: {
+                  darkMode,
+                  setDarkMode,
+                }: {
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
+  const { isAuthenticated, user, logout } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -53,6 +62,11 @@ function Header({
       navigate(`/search/${encodeURIComponent(searchTerm.trim())}`);
       setSearchTerm('');
     }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
   };
 
   return (
@@ -74,6 +88,26 @@ function Header({
           🔍
         </button>
       </form>
+
+      {!isAuthenticated ? (
+        <>
+          <button onClick={() => navigate('/login')} className="login-button">
+            Iniciar Sesión
+          </button>
+          <button onClick={() => navigate('/register')} className="register-button">
+            Registrarse
+          </button>
+        </>
+      ) : (
+        <div className="user-menu">
+          <button className="profile-button">
+            👤 Perfil
+          </button>
+          <button onClick={handleLogout} className="logout-button">
+            Cerrar Sesión
+          </button>
+        </div>
+      )}
 
       <button
         className="theme-toggle"

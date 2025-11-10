@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -80,5 +81,10 @@ public class UserService {
             User updatedUser = userRepository.save(existingUser);
             return entityToDTO(updatedUser);
         });
+    }
+
+    public Optional<UserDTO> getUserByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .map(this::entityToDTO);
     }
 }

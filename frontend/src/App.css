@@ -246,3 +246,51 @@
   outline: 3px solid rgba(37, 99, 235, 0.12);
   outline-offset: 2px;
 }
+
+.register-button {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.22s ease, transform 0.12s ease;
+    margin-left: 12px;
+}
+
+.register-button:hover {
+    background: var(--accent-600);
+    transform: translateY(-1px);
+}
+
+.register-button:focus {
+    outline: 3px solid rgba(37, 99, 235, 0.12);
+    outline-offset: 2px;
+}
+
+.login-button {
+    padding: 8px 16px;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 500;
+    transition: background 0.22s ease, transform 0.12s ease;
+    margin-left: 12px;
+}
+
+.login-button:hover {
+    background: var(--accent-600);
+    transform: translateY(-1px);
+}
+
+.login-button:focus {
+    outline: 3px solid rgba(37, 99, 235, 0.12);
+    outline-offset: 2px;
+}
+
+
