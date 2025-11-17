@@ -34,8 +34,6 @@ public class AppStartupRunner implements ApplicationRunner {
     }
 
 
-
-
     @Override
     public void run(ApplicationArguments args) throws Exception {
         // Should your backend perform any task during the bootstrap, do it here
