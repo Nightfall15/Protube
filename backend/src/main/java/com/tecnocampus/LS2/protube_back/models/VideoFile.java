@@ -21,8 +21,6 @@ public class VideoFile {
     @Getter
     @Column(length = 5000) String description;
     @Getter
-    private String userUploader;
-    @Getter
     private ArrayList<String> comments;
     @Getter
     private String mp4Path;
@@ -30,6 +28,11 @@ public class VideoFile {
     private String thumbnailPath;
     @Getter
     private String jsonPath;
+
+    @Getter
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User uploader;
 
     private ArrayList<String> tags;
 
