@@ -6,6 +6,7 @@ import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import { useAuth } from './context/AuthContext';
+import { Search, Sun, Moon, User } from 'lucide-react';
 
 
 function App() {
@@ -54,7 +55,7 @@ function Header({
 }) {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, logout } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,7 +86,7 @@ function Header({
           className="search-input"
         />
         <button type="submit" className="search-button">
-          🔍
+          <Search size={20} />
         </button>
       </form>
 
@@ -101,7 +102,7 @@ function Header({
       ) : (
         <div className="user-menu">
           <button className="profile-button">
-            👤 Perfil
+            <User size={18} /> Perfil
           </button>
           <button onClick={handleLogout} className="logout-button">
             Cerrar Sesión
@@ -116,7 +117,7 @@ function Header({
         title={darkMode ? 'Light mode' : 'Dark mode'}
       >
         <span className="theme-icon" aria-hidden>
-          {darkMode ? '☀️' : '🌙'}
+          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
         </span>
       </button>
     </header>
