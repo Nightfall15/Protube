@@ -11,5 +11,6 @@ public class VideoDTO {
     private String description;
     private String thumbnailUrl;
     private String videoUrl;
+    private String uploader;
 
 }

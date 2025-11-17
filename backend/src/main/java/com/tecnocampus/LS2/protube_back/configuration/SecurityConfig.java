@@ -59,7 +59,8 @@ public class SecurityConfig {
                         .requestMatchers("/api/videos/**").permitAll()
                         .requestMatchers("/api/users/**").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(("/api/**")).authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
