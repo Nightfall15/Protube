@@ -21,7 +21,8 @@ public class VideoFile {
     @Getter
     @Column(length = 5000) String description;
     @Getter
-    private ArrayList<String> comments;
+    @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
     @Getter
     private String mp4Path;
     @Getter
@@ -36,7 +37,7 @@ public class VideoFile {
 
     private ArrayList<String> tags;
 
-    public void addComment(String comment) {
+    public void addComment(Comment comment) {
         comments.add(comment);
     }
 
