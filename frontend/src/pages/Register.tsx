@@ -57,10 +57,10 @@ const Register: React.FC = () => {
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+    background: var(--auth-bg);
     padding: 140px 20px 40px 20px; /* Add top padding to account for fixed header */
     font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    color: #e6eef8;
+    color: var(--text-primary);
     position: relative;
   }
   .register-page::before {
@@ -74,7 +74,7 @@ const Register: React.FC = () => {
   .card {
     width: 100%;
     max-width: 920px;
-    background: rgba(255,255,255,0.04);
+    background: var(--bg-card);
     border-radius: 4px;
     box-shadow: none;
     padding: 28px;
@@ -100,19 +100,19 @@ const Register: React.FC = () => {
     justify-content: center;
     font-size: 32px;
     background: transparent;
-    color: white;
+    color: var(--text-primary);
     box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
   }
   .title {
     font-size: 20px;
     font-weight: 700;
     margin: 0;
-    color: #f1f5f9;
+    color: var(--text-primary);
     text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
   }
   .subtitle {
     margin: 0;
-    color: #cbd5e1;
+    color: var(--text-secondary);
     line-height: 1.4;
   }
   form {
@@ -127,7 +127,7 @@ const Register: React.FC = () => {
   }
   label {
     font-size: 13px;
-    color: #cbd5e1;
+    color: var(--label-color);
     margin-bottom: 6px;
     display: block;
     font-weight: 600;
@@ -137,17 +137,17 @@ const Register: React.FC = () => {
   input {
     width: 100%;
     padding: 12px 14px;
-    border-radius: 2px;
-    border: none;
-    background: rgba(0,0,0,0.28);
-    color: #e6eef8;
+    border-radius: 0px;
+    border: none; /* remove borders from info boxes */
+    background: var(--input-bg);
+    color: var(--text-primary);
     outline: none;
-    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4);
-    transition: box-shadow .15s, transform .05s;
+    box-shadow: none; /* remove inset shadow */
+    transition: transform .05s;
+    border-bottom: 1px dashed rgba(255,255,255,0.04); /* subtle rough underline */
   }
-  input:focus {
-    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.4), 0 0 0 3px rgba(96,165,250,0.08);
-  }
+  input::placeholder { color: var(--placeholder-color); }
+  input:focus { box-shadow: 0 0 0 3px rgba(96,165,250,0.06), inset 1px 1px 0 rgba(255,255,255,0.02); border-bottom-color: var(--accent); }
   .full {
     grid-column: 1 / -1;
   }
@@ -183,22 +183,7 @@ const Register: React.FC = () => {
   .btn-primary {
     background: linear-gradient(90deg,#60a5fa,#7c3aed);
     color: white;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.3);
-  }
-  .btn-primary:active {
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.3);
-  }
-  .btn-ghost {
-    background: transparent;
-    color: #cbd5e1;
-    box-shadow: 4px 4px 0 rgba(0,0,0,0.2);
-  }
-  .btn-ghost:active {
-    box-shadow: 2px 2px 0 rgba(0,0,0,0.2);
-  }
-  @media (max-width: 768px) {
-    .card { grid-template-columns: 1fr; padding: 20px; }
-    .grid { grid-template-columns: 1fr; }
+    box-shadow: none; /* remove shadow under create account */
   }
 `}</style>
       <div className="card" role="main" aria-labelledby="register-title">
@@ -208,8 +193,8 @@ const Register: React.FC = () => {
               src="/protube-logo-removebg-preview.png"
               alt="Protube logo"
               style={{
-                width: '180px',
-                height: '180px',
+                width: '260px',
+                height: 'auto',
                 objectFit: 'contain',
               }}
               aria-hidden="true"

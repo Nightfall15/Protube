@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import './App.css';
-import { BrowserRouter, Routes, Route, useNavigate, useParams, Link } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useNavigate, useParams, Link, useLocation } from 'react-router-dom';
 import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
@@ -56,6 +56,10 @@ function Header({
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
   const { isAuthenticated, logout } = useAuth();
+  const location = useLocation();
+
+  // hide search on auth pages
+  const hideSearch = location.pathname === '/register' || location.pathname === '/login';
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,54 +76,60 @@ function Header({
 
   return (
     <header className="App-header">
-      <Link to="/" className="logo-link">
-        <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
-      </Link>
-      <h1 className="App-title">ProTube</h1>
+      <div className="header-left">
+        <Link to="/" className="logo-link">
+          <img src="/protube-logo-removebg-preview.png" className="App-logo" alt="logo" />
+        </Link>
+        <h1 className="App-title">ProTube</h1>
+      </div>
 
-      <form onSubmit={handleSearch} className="search-form">
-        <input
-          type="text"
-          placeholder="Search videos..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-        <button type="submit" className="search-button">
-          <Search size={20} />
+      <div className="header-right">
+        {!hideSearch && (
+          <form onSubmit={handleSearch} className="search-form">
+            <input
+              type="text"
+              placeholder="Search videos..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input"
+            />
+            <button type="submit" className="search-button">
+              <Search size={20} />
+            </button>
+          </form>
+        )}
+
+        {!isAuthenticated ? (
+          <>
+            <button onClick={() => navigate('/login')} className="login-button">
+              Iniciar Sesión
+            </button>
+            <button onClick={() => navigate('/register')} className="register-button">
+              Registrarse
+            </button>
+          </>
+        ) : (
+          <div className="user-menu">
+            <button className="profile-button">
+              <User size={18} /> Perfil
+            </button>
+            <button onClick={handleLogout} className="logout-button">
+              Cerrar Sesión
+            </button>
+          </div>
+        )}
+
+        <button
+          className="theme-toggle"
+          onClick={() => setDarkMode((s) => !s)}
+          aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
+          title={darkMode ? 'Light mode' : 'Dark mode'}
+        >
+          <span className="theme-icon" aria-hidden>
+            {darkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </span>
         </button>
-      </form>
-
-      {!isAuthenticated ? (
-        <>
-          <button onClick={() => navigate('/login')} className="login-button">
-            Iniciar Sesión
-          </button>
-          <button onClick={() => navigate('/register')} className="register-button">
-            Registrarse
-          </button>
-        </>
-      ) : (
-        <div className="user-menu">
-          <button className="profile-button">
-            <User size={18} /> Perfil
-          </button>
-          <button onClick={handleLogout} className="logout-button">
-            Cerrar Sesión
-          </button>
-        </div>
-      )}
-
-      <button
-        className="theme-toggle"
-        onClick={() => setDarkMode((s) => !s)}
-        aria-label={darkMode ? 'Switch to light mode' : 'Switch to dark mode'}
-        title={darkMode ? 'Light mode' : 'Dark mode'}
-      >
-        <span className="theme-icon" aria-hidden>
-          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-        </span>
-      </button>
+      </div>
     </header>
   );
 }

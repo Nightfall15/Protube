@@ -9,6 +9,11 @@
   --shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
   --accent: #2563eb; /* blue accent */
   --accent-600: #1e40af;
+  --input-bg: rgba(2,6,23,0.04);
+  --placeholder-color: rgba(15,23,36,0.45);
+  --label-color: var(--text-primary);
+  /* slightly darker/off-white background for auth pages (darker white) */
+  --auth-bg: linear-gradient(135deg, #eef2f6 0%, #f6f8fa 100%);
 }
 
 :root[data-theme='dark'] {
@@ -21,6 +26,10 @@
   --shadow: 0 8px 24px rgba(2, 6, 23, 0.7);
   --accent: #60a5fa;
   --accent-600: #3b82f6;
+  --input-bg: rgba(0,0,0,0.45);
+  --placeholder-color: rgba(230,238,248,0.6);
+  --label-color: #cbd5e1;
+  --auth-bg: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
 }
 
 /* Base app layout */
@@ -39,37 +48,59 @@
   left: 0;
   width: 100%;
   z-index: 1000;
-  background-color: rgba(15, 23, 32, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  background-color: var(--bg-secondary); /* keep header consistent across pages */
+  /* remove heavy blur to avoid white bleed on other pages */
+  padding: 12px 24px;
   display: flex;
   align-items: center;
+  justify-content: space-between; /* keep left and right groups separated */
   gap: 20px;
   margin-bottom: 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  box-shadow: none; /* avoid extra shadows */
 }
 
-/* Search form */
+/* Header layout groups */
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0; /* allow truncation if needed */
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto; /* ensure it's pushed to the right */
+  min-width: 0;
+}
+
+/* Search form (unified, fixed height to avoid layout jump) */
 .search-form {
   display: flex;
   align-items: center;
-  margin-left: auto;
+  gap: 8px;
+  min-width: 180px;
+  max-width: 420px;
+  width: 320px;
   background: var(--bg-card);
-  border-radius: 20px;
+  border-radius: 12px;
   overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  height: 44px; /* fixed height */
   border: 1px solid var(--border-color);
 }
 
 .search-input {
+  flex: 1;
   border: none;
   padding: 8px 12px;
   outline: none;
   font-size: 1rem;
   background: transparent;
   color: var(--text-primary);
+  height: 100%;
+  min-width: 0; /* prevent overflowing container */
 }
 
 .search-button {
@@ -80,6 +111,10 @@
   cursor: pointer;
   font-size: 1.2rem;
   transition: background 0.22s ease, transform 0.12s ease;
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .search-button:hover {
@@ -90,44 +125,6 @@
 .search-title {
   text-align: center;
   color: var(--text-primary);
-  margin-top: 20px;
-}
-
-/* Add this under .App-header */
-.search-form {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  background: white;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-.search-input {
-  border: none;
-  padding: 8px 12px;
-  outline: none;
-  font-size: 1rem;
-}
-
-.search-button {
-  border: none;
-  background: #667eea;
-  color: white;
-  padding: 8px 12px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.3s;
-}
-
-.search-button:hover {
-  background: #5a67d8;
-}
-
-.search-title {
-  text-align: center;
-  color: white;
   margin-top: 20px;
 }
 
@@ -220,22 +217,22 @@
 /* Theme toggle button */
 .theme-toggle {
   margin-left: 16px;
-  padding: 8px 12px;
+  padding: 8px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   border-radius: 999px;
-  background: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: white !important; /* force white circle */
+  border: 1px solid rgba(0,0,0,0.06);
   cursor: pointer;
   font-size: 18px;
   transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
 }
 
 .theme-toggle:hover {
-  transform: scale(1.05);
-  background: #f5f5f5;
+  transform: scale(1.02);
+  background: white;
 }
 
 .theme-icon {
@@ -344,4 +341,11 @@
 .login-button:focus {
     outline: 3px solid rgba(37, 99, 235, 0.12);
     outline-offset: 2px;
+}
+
+/* If screen is very small, collapse search and shrink spacing */
+@media (max-width: 640px) {
+  .App-title { display: none; } /* hide title on very small screens to save space */
+  .search-form { width: 180px; }
+  .header-right { gap: 8px; }
 }
