@@ -5,6 +5,7 @@ import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import VideoPage from './pages/VideoPage';
 import { useAuth } from './context/AuthContext';
 
 
@@ -36,6 +37,7 @@ function App() {
           <Route path="/search/:query" element={<SearchResults />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/video/:id" element={<VideoPage />} />
         </Routes>
       </div>
     </BrowserRouter>
@@ -169,7 +171,12 @@ function VideoGrid({ videos }: { videos: VideoItem[] }) {
       {videos.map((video, index) => {
         const videoId = video.id || index + 1;
         return (
-          <div key={String(videoId) + (video.title ?? '')} className="video-card">
+          <Link
+            to={`/video/${videoId}`}
+            key={String(videoId) + (video.title ?? '')}
+            className="video-card"
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             <div className="video-thumbnail">
               <video
                 width="100%"
@@ -186,7 +193,7 @@ function VideoGrid({ videos }: { videos: VideoItem[] }) {
               <h3 className="video-title">{video.title || `Video ${videoId}`}</h3>
               {video.description && <p className="video-description">{video.description}</p>}
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>

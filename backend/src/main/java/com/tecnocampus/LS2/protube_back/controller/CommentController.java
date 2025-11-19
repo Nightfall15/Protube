@@ -25,7 +25,7 @@ public class CommentController {
             cdto.setId(c.getId());
             cdto.setAuthor(c.getAuthor());
             cdto.setText(c.getText());
-            cdto.setCreatedAt(c.getCreatedAt());
+            cdto.setCreatedAt(c.getCreatedAt().toString());
             return cdto;
         }).toList();
     }
@@ -42,7 +42,7 @@ public class CommentController {
         cdto.setId(saved.getId());
         cdto.setAuthor(saved.getAuthor());
         cdto.setText(saved.getText());
-        cdto.setCreatedAt(saved.getCreatedAt());
+        cdto.setCreatedAt(saved.getCreatedAt().toString());
         return cdto;
     }
 }
