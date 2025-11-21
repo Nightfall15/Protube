@@ -98,9 +98,21 @@ export default function VideoPage() {
           <section style={{ marginTop: '2rem' }}>
             <h2>Comments</h2>
 
+            {/* Comment box */}
+            <textarea
+              value={newComment}
+              onChange={(e) => setNewComment(e.target.value)}
+              placeholder="Write a comment..."
+              style={{ width: '100%', minHeight: 80, marginTop: '0.5rem' }}
+            />
+
+            <button onClick={submitComment} style={{ marginTop: '0rem', padding: '0.5rem 1rem' }}>
+              Post Comment
+            </button>
+
             {comments.length === 0 && <p>No comments yet. Pathetic.</p>}
 
-            <ul style={{ paddingLeft: 0, listStyle: 'none' }}>
+            <ul style={{ marginTop: '1rem', paddingLeft: 0, listStyle: 'none' }}>
               {comments.map((c) => (
                 <li
                   key={c.id}
@@ -115,18 +127,6 @@ export default function VideoPage() {
                 </li>
               ))}
             </ul>
-
-            {/* Comment box */}
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Write a comment..."
-              style={{ width: '100%', minHeight: 80, marginTop: '1rem' }}
-            />
-
-            <button onClick={submitComment} style={{ marginTop: '0.5rem', padding: '0.5rem 1rem' }}>
-              Post Comment
-            </button>
           </section>
         </>
       )}
