@@ -60,7 +60,7 @@ public class VideoService {
                     dto.setId(video.getId());
                     dto.setTitle(video.getTitle());
                     dto.setDescription(video.getDescription());
-                    dto.setThumbnailUrl("https://localhost:8080/api/videos/thumbnail/"+video.getId());
+                    dto.setThumbnailUrl("http://localhost:8080/api/videos/thumbnail/"+video.getId());
                     dto.setVideoUrl("http://localhost:8080/api/videos/stream/"+video.getId());
                     dto.setUploader(video.getUploader().getUsername());
                     return dto;

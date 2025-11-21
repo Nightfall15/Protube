@@ -5,6 +5,7 @@ import { useAllVideos } from './useAllVideos';
 import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
+import VideoPage from './pages/VideoPage';
 import { useAuth } from './context/AuthContext';
 import { Search, Sun, Moon, User } from 'lucide-react';
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/search/:query" element={<SearchResults />} />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/video/:id" element={<VideoPage />} />
         </Routes>
       </div>
     </BrowserRouter>
@@ -179,25 +181,26 @@ function VideoGrid({ videos }: { videos: VideoItem[] }) {
     <div className="video-grid">
       {videos.map((video, index) => {
         const videoId = video.id || index + 1;
+
         return (
-          <div key={String(videoId) + (video.title ?? '')} className="video-card">
+          <Link
+            to={`/video/${videoId}`}
+            key={String(videoId)}
+            className="video-card"
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             <div className="video-thumbnail">
-              <video
-                width="100%"
-                height="auto"
-                controls
-                poster={`/api/videos/thumbnail/${videoId}`}
-                className="video-player"
-              >
-                <source src={`/api/videos/stream/${videoId}`} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+              <img
+                src={`/api/videos/thumbnail/${videoId}`}
+                alt={video.title || `Video ${videoId}`}
+                className="thumbnail-image"
+                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+              />
             </div>
             <div className="video-info">
               <h3 className="video-title">{video.title || `Video ${videoId}`}</h3>
-              {video.description && <p className="video-description">{video.description}</p>}
             </div>
-          </div>
+          </Link>
         );
       })}
     </div>
