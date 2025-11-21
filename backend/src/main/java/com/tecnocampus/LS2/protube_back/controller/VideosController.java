@@ -42,9 +42,21 @@ public class VideosController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<VideoFile> getVideo(@PathVariable Long id) {
+    public ResponseEntity<VideoDTO> getVideoById(@PathVariable Long id) {
+
         return videoFileRepository.findById(id)
-                .map(ResponseEntity::ok)
+                .map(video -> {
+                    VideoDTO dto = new VideoDTO();
+                    dto.setId(video.getId());
+                    dto.setTitle(video.getTitle());
+                    dto.setDescription(video.getDescription());
+                    dto.setUploader(video.getUploader().getUsername());
+
+                    dto.setThumbnailUrl("http://localhost:8080/api/videos/thumbnail/" + video.getId());
+                    dto.setVideoUrl("http://localhost:8080/api/videos/stream/" + video.getId());
+
+                    return ResponseEntity.ok(dto);
+                })
                 .orElse(ResponseEntity.notFound().build());
     }
 
