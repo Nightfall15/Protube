@@ -6,9 +6,9 @@ import React, { useState, useEffect } from 'react';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import VideoPage from './pages/VideoPage';
+import UserPage from './pages/UserPage';
 import { useAuth } from './context/AuthContext';
 import { Search, Sun, Moon, User } from 'lucide-react';
-
 
 function App() {
   const [darkMode, setDarkMode] = useState<boolean>(() => {
@@ -39,19 +39,18 @@ function App() {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/video/:id" element={<VideoPage />} />
+          <Route path="/user" element={<UserPage />} />
         </Routes>
       </div>
     </BrowserRouter>
   );
-
-
 }
 
 // ================= HEADER WITH SEARCH =================
 function Header({
-                  darkMode,
-                  setDarkMode,
-                }: {
+  darkMode,
+  setDarkMode,
+}: {
   darkMode: boolean;
   setDarkMode: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
@@ -112,7 +111,7 @@ function Header({
           </>
         ) : (
           <div className="user-menu">
-            <button className="profile-button">
+            <button className="profile-button" onClick={() => navigate('/user')}>
               <User size={18} /> Perfil
             </button>
             <button onClick={handleLogout} className="logout-button">
@@ -194,7 +193,7 @@ function VideoGrid({ videos }: { videos: VideoItem[] }) {
                 src={`/api/videos/thumbnail/${videoId}`}
                 alt={video.title || `Video ${videoId}`}
                 className="thumbnail-image"
-                style={{ width: "100%", height: "auto", borderRadius: "8px" }}
+                style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
               />
             </div>
             <div className="video-info">
