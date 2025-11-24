@@ -229,6 +229,7 @@ const Register: React.FC = () => {
                 type="password"
                 value={formData.password}
                 onChange={handleChange}
+                minLength={8}
                 required
               />
             </div>
@@ -255,7 +256,14 @@ const Register: React.FC = () => {
             </div>
             <div>
               <label htmlFor="number">Number</label>
-              <input id="number" name="number" type="text" value={formData.number} onChange={handleChange} />
+              <input
+                id="number"
+                name="number"
+                type="tel"
+                value={formData.number}
+                onChange={handleChange}
+                pattern="[0-9]*"
+              />
             </div>
           </div>
 
