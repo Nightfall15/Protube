@@ -247,7 +247,7 @@ body {
 .theme-toggle {
   margin-left: 16px;
   padding: 8px;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
@@ -257,6 +257,8 @@ body {
   cursor: pointer;
   font-size: 18px;
   transition: transform 180ms ease, background 180ms ease, border-color 180ms ease;
+  width: 40px;
+  height: 40px;
 }
 
 .theme-toggle:hover {
@@ -265,9 +267,12 @@ body {
 }
 
 .theme-icon {
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 300ms ease, opacity 220ms ease;
   color: #0f1724;
+  line-height: 0;
 }
 
 /* small visual difference when dark mode is active */
