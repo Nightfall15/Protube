@@ -7,6 +7,7 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import VideoPage from './pages/VideoPage';
 import UserPage from './pages/UserPage';
+import UploadPage from './pages/UploadPage';
 import { useAuth } from './context/AuthContext';
 import { Search, Sun, Moon, User } from 'lucide-react';
 
@@ -40,6 +41,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/video/:id" element={<VideoPage />} />
           <Route path="/user" element={<UserPage />} />
+          <Route path="/user/upload" element={<UploadPage />} />
         </Routes>
       </div>
     </BrowserRouter>
