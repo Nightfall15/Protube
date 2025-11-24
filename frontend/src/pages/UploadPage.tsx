@@ -86,9 +86,8 @@ export default function UploadVideoPage() {
       <div className="card" role="main" aria-labelledby="upload-title">
         <form onSubmit={handleUpload} aria-label="Upload form">
           <h1 id="upload-title" className="title">
-            Subir Video
+            Upload your video
           </h1>
-          <p className="subtitle">Upload your video to ProTube</p>
 
           {error && (
             <div className="error" role="alert">
