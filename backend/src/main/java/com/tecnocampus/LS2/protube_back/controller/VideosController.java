@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
@@ -134,5 +135,22 @@ public class VideosController {
                 .body(resource);
     }
 
+    @PostMapping("/upload")
+    public ResponseEntity<?> uploadVideo(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam("uploader") String username
+    ) throws IOException {
 
+        if (file.isEmpty())
+            return ResponseEntity.badRequest().body("No video file provided");
+        try {
+            Long videoId = videoService.saveUploadedVideo(file, title, description, username);
+            return ResponseEntity.ok(videoId);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(500).body("Error uploading video: " + e.getMessage());
+        }
+    }
 }

@@ -13,6 +13,7 @@ import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -114,6 +115,44 @@ public class VideoService {
                 videoFileRepository.save(video);
             }
         }
+    }
+
+    public Long saveUploadedVideo(
+            MultipartFile file,
+            String title,
+            String description,
+            String uploaderUsername
+
+    ) throws Exception {
+        //Ensure directory exists
+        Path videoDir = Paths.get("videos");
+        if (!Files.exists(videoDir)) Files.createDirectories(videoDir);
+
+        //Generate file name
+        String cleanFilename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
+        Path videoPath = videoDir.resolve(cleanFilename);
+
+        //Save mp4 file to disk
+        Files.copy(file.getInputStream(), videoPath);
+
+        //Get username
+        User uploader = userRepository.findByUsername(uploaderUsername)
+                .orElseThrow(() -> new RuntimeException("User not found: " + uploaderUsername));
+
+        //Create entity
+        VideoFile video = new VideoFile();
+        video.setTitle(title);
+        video.setDescription(description);
+        video.setMp4Path(videoPath.toString());
+        video.setThumbnailPath(null); //no thumbnail for now
+        video.setJsonPath(null);      //not required
+        video.setTags(new ArrayList<>()); //empty list for now
+        video.setUploader(uploader);
+
+        //Save to database
+        videoFileRepository.save(video);
+
+        return video.getId();
     }
 
     private User createDefaultUser(String username) {
