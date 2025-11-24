@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useAuth } from '../context/AuthContext';
 
 type UserDTO = {
   id: number;
@@ -13,17 +14,28 @@ export default function UserPage() {
   const [user, setUser] = useState<UserDTO | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const { token } = useAuth();
+
   useEffect(() => {
+    if (!token) {
+      setLoading(false);
+      return;
+    }
     fetch('/api/users/me', {
-      credentials: 'include',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
-      .then((r) => r.json())
+      .then((r) => {
+        if (!r.ok) throw new Error('Not authenticated');
+        return r.json();
+      })
       .then((data) => {
         setUser(data);
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  }, []);
+  }, [token]);
 
   if (loading) return <div className="loading-spinner">Loading user...</div>;
   if (!user) return <div className="error-message">User not found</div>;
