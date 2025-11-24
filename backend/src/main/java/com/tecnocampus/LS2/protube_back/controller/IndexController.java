@@ -10,7 +10,8 @@ public class IndexController {
 
     @GetMapping("")
     public ModelAndView home() {
-        return new ModelAndView("index");
+        // Forward to the static index.html so static resource handler serves it
+        return new ModelAndView("forward:/index.html");
     }
     @PostMapping("logout")
     public ModelAndView logout() {
