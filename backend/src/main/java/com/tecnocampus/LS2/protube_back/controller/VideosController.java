@@ -52,6 +52,7 @@ public class VideosController {
                     dto.setTitle(video.getTitle());
                     dto.setDescription(video.getDescription());
                     dto.setUploader(video.getUploader().getUsername());
+                    dto.setLikes(video.getLikes());
 
                     dto.setThumbnailUrl("http://localhost:8080/api/videos/thumbnail/" + video.getId());
                     dto.setVideoUrl("http://localhost:8080/api/videos/stream/" + video.getId());
@@ -152,5 +153,27 @@ public class VideosController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading video: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<?> likeVideo(@PathVariable Long id) {
+        VideoFile video = videoFileRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video not found"));
+
+        video.setLikes(video.getLikes() + 1);
+        videoFileRepository.save(video);
+
+        return ResponseEntity.ok(video.getLikes());
+    }
+
+    @PostMapping("/{id}/unlike")
+    public ResponseEntity<?> unlikeVideo(@PathVariable Long id) {
+        VideoFile video = videoFileRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video not found"));
+
+        video.setLikes(Math.max(0, video.getLikes() - 1));
+        videoFileRepository.save(video);
+
+        return ResponseEntity.ok(video.getLikes());
     }
 }

@@ -16,13 +16,17 @@ public class VideoFile {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Getter
     private String title;
+
     @Getter
     @Column(length = 5000) String description;
+
     @Getter
     @OneToMany(mappedBy = "video", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
+
     @Getter
     private String mp4Path;
     @Getter
@@ -37,8 +41,7 @@ public class VideoFile {
 
     private ArrayList<String> tags;
 
-    public void addComment(Comment comment) {
-        comments.add(comment);
-    }
+    @Getter @Setter
+    private int likes = 0;
 
 }

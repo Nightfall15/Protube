@@ -20,29 +20,17 @@ public class CommentController {
 
     @GetMapping("")
     public List<CommentDTO> getComments(@PathVariable Long videoId) {
-        return commentService.getCommentsForVideo(videoId).stream().map(c -> {
-            CommentDTO cdto = new CommentDTO();
-            cdto.setId(c.getId());
-            cdto.setAuthor(c.getAuthor());
-            cdto.setText(c.getText());
-            cdto.setCreatedAt(c.getCreatedAt().toString());
-            return cdto;
-        }).toList();
+        return commentService.getCommentsForVideo(videoId);
     }
 
     @PostMapping("")
     public CommentDTO createComment(
             @PathVariable Long videoId,
             @RequestParam String author,
-            @RequestParam String text) {
+            @RequestParam String text,
+            @RequestParam(required = false) Long parentId) {
 
-        Comment saved = commentService.addComment(videoId, author, text);
-
-        CommentDTO cdto = new CommentDTO();
-        cdto.setId(saved.getId());
-        cdto.setAuthor(saved.getAuthor());
-        cdto.setText(saved.getText());
-        cdto.setCreatedAt(saved.getCreatedAt().toString());
-        return cdto;
+        Comment saved = commentService.addComment(videoId, author, text, parentId);
+        return commentService.toDTO(saved);
     }
 }
