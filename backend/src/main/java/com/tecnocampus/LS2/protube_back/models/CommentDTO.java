@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 import java.time.LocalDateTime;
 
@@ -12,4 +13,5 @@ public class CommentDTO {
     private String author;
     private String text;
     private String createdAt;
+    private List<CommentDTO> replies;
 }

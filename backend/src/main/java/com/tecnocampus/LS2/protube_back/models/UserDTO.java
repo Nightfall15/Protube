@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.models;
 
 import lombok.Getter;
 import lombok.Setter;
+import java.util.List;
 
 @Getter
 @Setter
@@ -12,4 +13,5 @@ public class UserDTO {
     private String name;
     private String surname;
     private String number;
+    private List<Long> likedVideoIds;
 }

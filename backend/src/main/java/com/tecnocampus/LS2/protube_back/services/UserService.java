@@ -2,6 +2,7 @@ package com.tecnocampus.LS2.protube_back.services;
 
 import com.tecnocampus.LS2.protube_back.models.User;
 import com.tecnocampus.LS2.protube_back.models.UserDTO;
+import com.tecnocampus.LS2.protube_back.models.VideoFile;
 import com.tecnocampus.LS2.protube_back.repositories.IUserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -48,6 +49,11 @@ public class UserService {
         dto.setName(u.getName());
         dto.setSurname(u.getSurname());
         dto.setNumber(u.getNumber());
+        dto.setLikedVideoIds(
+                u.getLikedVideos().stream()
+                        .map(VideoFile::getId)
+                        .toList()
+        );
         return dto;
     }
 

@@ -12,5 +12,6 @@ public class VideoDTO {
     private String thumbnailUrl;
     private String videoUrl;
     private String uploader;
+    private int likes;
 
 }
