@@ -46,7 +46,11 @@ export default function VideoPage() {
       .get(`${getEnv().API_BASE_URL}/videos/${id}/comments`)
       .then((res) => setComments(res.data || []))
       .catch(() => setComments([]));
-  }, [id]);
+
+    if (user && user.likedVideoIds) {
+      setHasLiked(user.likedVideoIds.includes(Number(id)));
+    }
+  }, [id, user]);
 
   //Post new comment
   const submitComment = () => {
@@ -77,7 +81,7 @@ export default function VideoPage() {
   };
 
   const toggleLike = () => {
-    if (!id || !video || !token) return;
+    if (!video || !token) return;
 
     const endpoint = hasLiked ? 'unlike' : 'like';
 
@@ -94,8 +98,16 @@ export default function VideoPage() {
       .then((res) => {
         setVideo({ ...video, likes: res.data });
         setHasLiked(!hasLiked);
-      })
-      .catch(() => alert('Failed to update like.'));
+        if (user) {
+          const updated = {
+            ...user,
+            likedVideoIds: hasLiked
+              ? user.likedVideoIds.filter((v) => v !== Number(id))
+              : [...user.likedVideoIds, Number(id)],
+          };
+          localStorage.setItem('user', JSON.stringify(updated));
+        }
+      });
   };
 
   if (!id) return <div>Missing video ID.</div>;
@@ -157,7 +169,7 @@ export default function VideoPage() {
     axios
       .post(`${getEnv().API_BASE_URL}/videos/${id}/comments`, null, {
         params: {
-          author: user.username,
+          author: user!.username,
           text,
           parentId,
         },

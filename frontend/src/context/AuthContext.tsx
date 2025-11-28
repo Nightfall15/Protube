@@ -7,6 +7,7 @@ interface User {
   email: string;
   name: string;
   surname: string;
+  likedVideoIds: number[];
 }
 
 interface AuthContextType {
