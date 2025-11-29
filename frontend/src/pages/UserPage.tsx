@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAllVideos } from '../useAllVideos';
+import VideoGrid from '../components/VideoGrid';
 import { useAuth } from '../context/AuthContext';
 
 type UserDTO = {
@@ -16,6 +18,8 @@ export default function UserPage() {
   const [loading, setLoading] = useState(true);
 
   const { token } = useAuth();
+  const { user: authUser } = useAuth();
+  const { videos, loading: videosLoading } = useAllVideos();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,6 +42,9 @@ export default function UserPage() {
       })
       .catch(() => setLoading(false));
   }, [token]);
+
+  const likedVideos =
+    authUser?.likedVideoIds && videos ? videos.filter((v) => authUser.likedVideoIds.includes(Number(v.id))) : [];
 
   if (loading) return <div className="loading-spinner">Loading user...</div>;
   if (!user) return <div className="error-message">User not found</div>;
@@ -66,14 +73,14 @@ export default function UserPage() {
             <h1 id="user-title" className="title">
               Perfil de {user.username}
             </h1>
-            <p className="subtitle">Manage your profile and uploads</p>
+            <p className="subtitle">Administra tu perfil y sube contenido</p>
           </div>
 
           <div className="section">
-            <h2 className="section-title">Profile Information</h2>
+            <h2 className="section-title">Información de perfil</h2>
             <div className="info-grid">
               <div className="info-item">
-                <label>Full name</label>
+                <label>Nombre completo</label>
                 <div className="info-value">
                   {user.name} {user.surname}
                 </div>
@@ -85,12 +92,12 @@ export default function UserPage() {
               </div>
 
               <div className="info-item">
-                <label>Username</label>
+                <label>Nombre de usuario</label>
                 <div className="info-value">{user.username}</div>
               </div>
 
               <div className="info-item">
-                <label>Phone</label>
+                <label>Teléfono</label>
                 <div className="info-value">{user.number ?? 'Not provided'}</div>
               </div>
             </div>
@@ -105,6 +112,16 @@ export default function UserPage() {
           <div className="section">
             <h2 className="section-title">Mis Vídeos</h2>
             <p className="subtitle">Tus vídeos se mostrarán aquí (coming soon)</p>
+          </div>
+
+          <div className="section">
+            <h2 className="section-title">Vídeos que me han gustado</h2>
+
+            {videosLoading === 'loading' && <p>Cargando videos…</p>}
+
+            {likedVideos.length === 0 && <p className="subtitle">No has dado like a ningún vídeo todavía.</p>}
+
+            {likedVideos.length > 0 && <VideoGrid videos={likedVideos} />}
           </div>
         </div>
       </div>

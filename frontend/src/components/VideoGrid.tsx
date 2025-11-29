@@ -1,26 +1,38 @@
-import { useState, useEffect } from 'react';
-import { getEnv } from '../utils/Env';
+import { Link } from 'react-router-dom';
 
-const VideoGrid = () => {
-  const [someData, setSomeData] = useState([]);
-
-  useEffect(() => {
-    fetch(getEnv().API_BASE_URL + '/someEndpoint')
-      .then((res) => {
-        return res.json();
-      })
-      .then((data) => {
-        setSomeData(data);
-      });
-  }, []);
-
-  return (
-    <ul className="row g-4">
-      {someData?.map((entity) => (
-        <li>{entity}</li>
-      ))}
-    </ul>
-  );
+export type VideoItem = {
+  id?: number | string;
+  title?: string;
+  description?: string;
 };
 
-export default VideoGrid;
+export default function VideoGrid({ videos }: { videos: VideoItem[] }) {
+  return (
+    <div className="video-grid">
+      {videos.map((video, index) => {
+        const videoId = video.id || index + 1;
+
+        return (
+          <Link
+            to={`/video/${videoId}`}
+            key={String(videoId)}
+            className="video-card"
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <div className="video-thumbnail">
+              <img
+                src={`/api/videos/thumbnail/${videoId}`}
+                alt={video.title || `Video ${videoId}`}
+                className="thumbnail-image"
+                style={{ width: '100%', height: 'auto', borderRadius: '8px' }}
+              />
+            </div>
+            <div className="video-info">
+              <h3 className="video-title">{video.title || `Video ${videoId}`}</h3>
+            </div>
+          </Link>
+        );
+      })}
+    </div>
+  );
+}
