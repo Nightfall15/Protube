@@ -50,15 +50,13 @@ export default function VideoPage() {
 
     //Call post with comment info
     axios
-      .post(`${getEnv().API_BASE_URL}/videos/${id}/comments`, null, {
-        params: {
-          author: 'Anonymous', //To be turned into The UserTM
-          text: newComment.trim(),
-        },
+      .post<Comment>(`${getEnv().API_BASE_URL}/videos/${id}/comments`, {
+        author: 'Anonymous', //To be turned into The UserTM
+        text: newComment.trim(),
       })
-      //Post success, refresh comment list with new comment
+      // Post success, refresh comment list with new comment
       .then((res) => {
-        setComments([...comments, res.data]);
+        setComments((prev) => [...prev, res.data as Comment]);
         setNewComment('');
       })
       //Catch any possible error
@@ -77,6 +75,9 @@ export default function VideoPage() {
     return isNaN(d.getTime()) ? raw : d.toLocaleString();
   };
 
+  // Ensure poster URL has a stable type: string | undefined
+  const posterUrl: string | undefined = video && video.thumbnailUrl ? String(video.thumbnailUrl) : undefined;
+
   return (
     <div style={{ padding: '1.5rem' }}>
       {!video ? (
@@ -85,14 +86,40 @@ export default function VideoPage() {
         <>
           <h1>{video.title}</h1>
 
-          <video
-            controls
-            style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
-            src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
-            poster={video.thumbnailUrl}
-          />
+          {posterUrl ? (
+            <video
+              controls
+              style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
+              src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
+              poster={posterUrl}
+            />
+          ) : (
+            <video
+              controls
+              style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
+              src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
+            />
+          )}
 
-          <p style={{ marginTop: '1rem' }}>{video.description}</p>
+          {/* Description box: fixed max height with vertical scrollbar when overflowing */}
+          <div
+            style={{
+              marginTop: '1rem',
+              width: '100%',
+              maxWidth: 900,
+              border: '1px solid #ddd',
+              borderRadius: 6,
+              padding: '1rem',
+              background: '#fafafa',
+              color: '#000',
+              maxHeight: 200,
+              overflowY: 'auto',
+              boxSizing: 'border-box',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {video.description}
+          </div>
 
           {/*Comments*/}
           <section style={{ marginTop: '2rem' }}>

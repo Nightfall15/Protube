@@ -170,7 +170,6 @@ const styles = `
     font-weight: 700;
     margin: 0;
     color: var(--text-primary);
-    text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
   }
   .subtitle {
     margin: 0;
