@@ -15,6 +15,7 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
@@ -37,6 +38,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
                 )
         }
 )
+@TestPropertySource(properties = {
+        "protube.store.dir=${ENV_PROTUBE_STORE_DIR:src/test/resources/videos}"
+})
 class UserControllerTest {
 
     @Autowired
