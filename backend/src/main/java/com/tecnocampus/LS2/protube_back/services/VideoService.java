@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -154,6 +155,41 @@ public class VideoService {
         videoFileRepository.save(video);
 
         return video.getId();
+    }
+
+    private void generateThumbnail(String videoPath, String thumbnailPath) throws IOException, InterruptedException {
+        // Get video duration first
+        ProcessBuilder durationBuilder = new ProcessBuilder(
+                "ffprobe",
+                "-v", "error",
+                "-show_entries", "format=duration",
+                "-of", "default=noprint_wrappers=1:nokey=1",
+                videoPath
+        );
+        Process durationProcess = durationBuilder.start();
+        String durationStr = new String(durationProcess.getInputStream().readAllBytes()).trim();
+        durationProcess.waitFor();
+
+        double duration = Double.parseDouble(durationStr);
+        double randomTime = Math.random() * duration;
+
+        // Generate thumbnail at random time
+        ProcessBuilder builder = new ProcessBuilder(
+                "ffmpeg",
+                "-ss", String.valueOf(randomTime),
+                "-i", videoPath,
+                "-vframes", "1",
+                "-vf", "scale=320:-1",
+                "-q:v", "2",
+                thumbnailPath
+        );
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new IOException("FFmpeg failed with exit code: " + exitCode);
+        }
     }
 
     private User createDefaultUser(String username) {
