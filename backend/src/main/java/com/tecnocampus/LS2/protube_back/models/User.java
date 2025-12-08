@@ -32,6 +32,14 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "uploader", cascade = CascadeType.ALL)
     private List<VideoFile> uploadedVideos = new ArrayList<>();
 
+    @ManyToMany
+    @JoinTable(
+            name = "user_liked_videos",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "video_id")
+    )
+    private List<VideoFile> likedVideos = new ArrayList<>();
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));

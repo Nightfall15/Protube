@@ -1,9 +1,12 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
 import com.tecnocampus.LS2.protube_back.models.RangeResource;
+import com.tecnocampus.LS2.protube_back.models.User;
 import com.tecnocampus.LS2.protube_back.models.VideoDTO;
 import com.tecnocampus.LS2.protube_back.models.VideoFile;
+import com.tecnocampus.LS2.protube_back.repositories.IUserRepository;
 import com.tecnocampus.LS2.protube_back.repositories.IVideoFileRepository;
+import com.tecnocampus.LS2.protube_back.services.UserService;
 import com.tecnocampus.LS2.protube_back.services.VideoService;
 import org.springframework.core.io.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.security.core.Authentication;
+
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -29,10 +34,15 @@ public class VideosController {
 
     VideoService videoService;
     private final IVideoFileRepository videoFileRepository;
+    private final UserService userService;
+    private final IUserRepository userRepository;
 
-    public VideosController(IVideoFileRepository videoFileRepository, VideoService videoService) {
+    public VideosController(IVideoFileRepository videoFileRepository, VideoService videoService,UserService userService,
+                            IUserRepository userRepository) {
         this.videoService = videoService;
         this.videoFileRepository = videoFileRepository;
+        this.userService = userService;
+        this.userRepository = userRepository;
     }
 
 
@@ -52,6 +62,7 @@ public class VideosController {
                     dto.setTitle(video.getTitle());
                     dto.setDescription(video.getDescription());
                     dto.setUploader(video.getUploader().getUsername());
+                    dto.setLikes(video.getLikes());
 
                     dto.setThumbnailUrl("http://localhost:8080/api/videos/thumbnail/" + video.getId());
                     dto.setVideoUrl("http://localhost:8080/api/videos/stream/" + video.getId());
@@ -152,5 +163,44 @@ public class VideosController {
             e.printStackTrace();
             return ResponseEntity.status(500).body("Error uploading video: " + e.getMessage());
         }
+    }
+
+    @PostMapping("/{id}/like")
+    public ResponseEntity<?> like(@PathVariable Long id, Authentication auth) {
+
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        VideoFile video = videoFileRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video not found"));
+
+        if (!user.getLikedVideos().contains(video)) {
+            user.getLikedVideos().add(video);
+            video.setLikes(video.getLikes() + 1);
+            userRepository.save(user);
+            videoFileRepository.save(video);
+        }
+
+        return ResponseEntity.ok(video.getLikes());
+    }
+
+    @PostMapping("/{id}/unlike")
+    public ResponseEntity<?> unlike(@PathVariable Long id, Authentication auth) {
+
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
+
+        VideoFile video = videoFileRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Video not found"));
+
+        if (user.getLikedVideos().remove(video)) {
+            video.setLikes(Math.max(0, video.getLikes() - 1));
+            userRepository.save(user);
+            videoFileRepository.save(video);
+        }
+
+        return ResponseEntity.ok(video.getLikes());
     }
 }

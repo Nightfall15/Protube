@@ -8,7 +8,6 @@ import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.config.annotation.*;
 
 @Configuration
-@EnableWebMvc
 public class MvcConfig implements WebMvcConfigurer {
 
     private static final Logger LOG =
@@ -23,7 +22,6 @@ public class MvcConfig implements WebMvcConfigurer {
            .addResourceHandler("/media/**")
            .addResourceLocations(
                    String.format("file:%s", env.getProperty("pro_tube.store.dir")));
-
         registry.addResourceHandler("/**")
            .addResourceLocations("classpath:/static/", "classpath:/public/",
                         "classpath:/resources/",

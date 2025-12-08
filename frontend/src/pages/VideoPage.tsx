@@ -2,12 +2,14 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { getEnv } from '../utils/Env';
+import { useAuth } from '../context/AuthContext';
 
 type Comment = {
   id: number;
   author: string;
   text: string;
   createdAt?: string | null;
+  replies: Comment[];
 };
 
 type Video = {
@@ -17,14 +19,17 @@ type Video = {
   videoUrl?: string;
   thumbnailUrl?: string;
   uploader?: string;
+  likes?: number;
 };
 
 export default function VideoPage() {
   const { id } = useParams<{ id: string }>();
+  const { token, user } = useAuth();
 
   const [video, setVideo] = useState<Video | null>(null);
   const [comments, setComments] = useState<Comment[]>([]);
   const [newComment, setNewComment] = useState('');
+  const [hasLiked, setHasLiked] = useState(false);
 
   //Load video and comments
   useEffect(() => {
@@ -41,12 +46,16 @@ export default function VideoPage() {
       .get(`${getEnv().API_BASE_URL}/videos/${id}/comments`)
       .then((res) => setComments(res.data || []))
       .catch(() => setComments([]));
-  }, [id]);
+
+    if (user && user.likedVideoIds) {
+      setHasLiked(user.likedVideoIds.includes(Number(id)));
+    }
+  }, [id, user]);
 
   //Post new comment
   const submitComment = () => {
     //Ensure valid comment
-    if (!newComment.trim() || !id) return;
+    if (!newComment.trim() || !id || !user) return;
 
     //Call post with comment info
     axios
@@ -63,6 +72,36 @@ export default function VideoPage() {
       .catch((err) => {
         console.error(err);
         alert('Failed to post comment.');
+      });
+  };
+
+  const toggleLike = () => {
+    if (!video || !token) return;
+
+    const endpoint = hasLiked ? 'unlike' : 'like';
+
+    axios
+      .post(
+        `${getEnv().API_BASE_URL}/videos/${id}/${endpoint}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      .then((res) => {
+        setVideo({ ...video, likes: res.data });
+        setHasLiked(!hasLiked);
+        if (user) {
+          const updated = {
+            ...user,
+            likedVideoIds: hasLiked
+              ? user.likedVideoIds.filter((v) => v !== Number(id))
+              : [...user.likedVideoIds, Number(id)],
+          };
+          localStorage.setItem('user', JSON.stringify(updated));
+        }
       });
   };
 
@@ -84,6 +123,7 @@ export default function VideoPage() {
         <div>Loading video...</div>
       ) : (
         <>
+          {/* Video */}
           <h1>{video.title}</h1>
 
           {posterUrl ? (
@@ -126,32 +166,28 @@ export default function VideoPage() {
             <h2>Comments</h2>
 
             {/* Comment box */}
-            <textarea
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Write a comment..."
-              style={{ width: '100%', minHeight: 80, marginTop: '0.5rem' }}
-            />
+            {user ? (
+              <>
+                <textarea
+                  value={newComment}
+                  onChange={(e) => setNewComment(e.target.value)}
+                  placeholder="Write a comment..."
+                  style={{ width: '100%', minHeight: 80, marginTop: '0.5rem' }}
+                />
 
-            <button onClick={submitComment} style={{ marginTop: '0rem', padding: '0.5rem 1rem' }}>
-              Post Comment
-            </button>
+                <button onClick={submitComment} style={{ marginTop: '0rem', padding: '0.5rem 1rem' }}>
+                  Post Comment
+                </button>
+              </>
+            ) : (
+              <p style={{ color: '#777', marginTop: '0.5rem' }}>You must be logged in to post comments.</p>
+            )}
 
-            {comments.length === 0 && <p>No comments yet. Pathetic.</p>}
+            {comments.length === 0 && <p>No comments yet.</p>}
 
             <ul style={{ marginTop: '1rem', paddingLeft: 0, listStyle: 'none' }}>
               {comments.map((c) => (
-                <li
-                  key={c.id}
-                  style={{
-                    padding: '0.6rem 0',
-                    borderBottom: '1px solid #ddd',
-                  }}
-                >
-                  <strong>{c.author}</strong>
-                  <div>{c.text}</div>
-                  <small style={{ color: '#555' }}>{formatDate(c.createdAt)}</small>
-                </li>
+                <CommentItem key={c.id} comment={c} onReply={postReply} />
               ))}
             </ul>
           </section>

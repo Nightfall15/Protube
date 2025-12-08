@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface ICommentRepository extends JpaRepository<Comment, Long> {
     List<Comment> findByVideoIdOrderByCreatedAtAsc(Long videoId);
+    List<Comment> findByVideoIdAndParentIsNullOrderByCreatedAtAsc(Long videoId);
+    List<Comment> findByParentIdOrderByCreatedAtAsc(Long parentId);
 }
