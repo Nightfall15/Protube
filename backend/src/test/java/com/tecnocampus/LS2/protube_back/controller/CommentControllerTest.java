@@ -36,7 +36,7 @@ class CommentControllerTest {
         List<CommentDTO> result = commentController.getComments(10L);
 
         assertEquals(1, result.size());
-        assertEquals("Sherma", result.get(0).getAuthor());
+        assertEquals("Batman", result.get(0).getAuthor());
         verify(commentService, times(1))
                 .getCommentsForVideo(10L);
     }
