@@ -15,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -123,37 +124,76 @@ public class VideoService {
             String title,
             String description,
             String uploaderUsername
-
     ) throws Exception {
-        //Ensure directory exists
+        // Ensure directory exists
         Path videoDir = Paths.get("videos");
         if (!Files.exists(videoDir)) Files.createDirectories(videoDir);
 
-        //Generate file name
+        // Generate file name
         String cleanFilename = System.currentTimeMillis() + "_" + file.getOriginalFilename();
         Path videoPath = videoDir.resolve(cleanFilename);
 
-        //Save mp4 file to disk
+        // Save mp4 file to disk
         Files.copy(file.getInputStream(), videoPath);
 
-        //Get username
+        // Generate thumbnail
+        String thumbnailFilename = System.currentTimeMillis() + "_thumbnail.webp";
+        Path thumbnailPath = videoDir.resolve(thumbnailFilename);
+        generateThumbnail(videoPath.toString(), thumbnailPath.toString());
+
+        // Get username
         User uploader = userRepository.findByUsername(uploaderUsername)
                 .orElseThrow(() -> new RuntimeException("User not found: " + uploaderUsername));
 
-        //Create entity
+        // Create entity
         VideoFile video = new VideoFile();
         video.setTitle(title);
         video.setDescription(description);
         video.setMp4Path(videoPath.toString());
-        video.setThumbnailPath(null); //no thumbnail for now
-        video.setJsonPath(null);      //not required
-        video.setTags(new ArrayList<>()); //empty list for now
+        video.setThumbnailPath(thumbnailPath.toString());
+        video.setJsonPath(null);
+        video.setTags(new ArrayList<>());
         video.setUploader(uploader);
 
-        //Save to database
+        // Save to database
         videoFileRepository.save(video);
 
         return video.getId();
+    }
+
+    private void generateThumbnail(String videoPath, String thumbnailPath) throws IOException, InterruptedException {
+        // Get video duration first
+        ProcessBuilder durationBuilder = new ProcessBuilder(
+                "ffprobe",
+                "-v", "error",
+                "-show_entries", "format=duration",
+                "-of", "default=noprint_wrappers=1:nokey=1",
+                videoPath
+        );
+        Process durationProcess = durationBuilder.start();
+        String durationStr = new String(durationProcess.getInputStream().readAllBytes()).trim();
+        durationProcess.waitFor();
+
+        double duration = Double.parseDouble(durationStr);
+        double randomTime = Math.random() * duration;
+
+        // Generate thumbnail at random time
+        ProcessBuilder builder = new ProcessBuilder(
+                "ffmpeg",
+                "-ss", String.valueOf(randomTime),
+                "-i", videoPath,
+                "-vframes", "1",
+                "-vf", "scale=320:-1",
+                "-q:v", "2",
+                thumbnailPath
+        );
+        builder.redirectErrorStream(true);
+        Process process = builder.start();
+
+        int exitCode = process.waitFor();
+        if (exitCode != 0) {
+            throw new IOException("FFmpeg failed with exit code: " + exitCode);
+        }
     }
 
     private User createDefaultUser(String username) {
