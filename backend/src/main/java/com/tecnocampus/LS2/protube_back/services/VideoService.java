@@ -161,6 +161,7 @@ public class VideoService {
         return video.getId();
     }
 
+
     private void generateThumbnail(String videoPath, String thumbnailPath) throws IOException, InterruptedException {
         // Get video duration first
         ProcessBuilder durationBuilder = new ProcessBuilder(
