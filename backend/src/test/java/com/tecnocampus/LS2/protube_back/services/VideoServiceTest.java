@@ -130,7 +130,7 @@ class VideoServiceTest {
     void uploadAllVideos_shouldProcessAllVideoFiles() throws Exception {
         Path mp4File = tempDir.resolve("1.mp4");
         Path jsonFile = tempDir.resolve("1.json");
-        Path webpFile = tempDir.resolve("video1.webp");
+        Path webpFile = tempDir.resolve("1.webp");
 
         Files.writeString(mp4File, "video content");
         Files.writeString(jsonFile, "{\"user\":\"testUser\",\"title\":\"Test\",\"meta\":{\"description\":\"Desc\"},\"tags\":[]}");

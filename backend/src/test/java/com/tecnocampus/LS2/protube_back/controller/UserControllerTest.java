@@ -1,14 +1,19 @@
 package com.tecnocampus.LS2.protube_back.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tecnocampus.LS2.protube_back.configuration.JwtAuthenticationFilter;
 import com.tecnocampus.LS2.protube_back.models.UserDTO;
+import com.tecnocampus.LS2.protube_back.services.JwtService;
 import com.tecnocampus.LS2.protube_back.services.UserService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.http.MediaType;
+import org.springframework.security.config.annotation.web.WebSecurityConfigurer;
 import org.springframework.security.core.Authentication;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,7 +25,18 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(
+        controllers = UserController.class,
+        excludeAutoConfiguration = {
+                org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class
+        },
+        excludeFilters = {
+                @ComponentScan.Filter(
+                        type = FilterType.ASSIGNABLE_TYPE,
+                        classes = {WebSecurityConfigurer.class, JwtAuthenticationFilter.class}
+                )
+        }
+)
 class UserControllerTest {
 
     @Autowired
@@ -29,7 +45,11 @@ class UserControllerTest {
     @MockBean
     private UserService service;
 
+    @MockBean
+    private JwtService jwtService;
+
     private final ObjectMapper mapper = new ObjectMapper();
+
 
     @Test
     void testCreateUser() throws Exception {
