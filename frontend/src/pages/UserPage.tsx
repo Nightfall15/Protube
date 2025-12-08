@@ -101,11 +101,7 @@ export default function UserPage() {
               </button>
             </div>
           </div>
-
-          <div className="section">
-            <h2 className="section-title">Mis Vídeos</h2>
-            <p className="subtitle">Tus vídeos se mostrarán aquí (coming soon)</p>
-          </div>
+          
         </div>
       </div>
     </div>
