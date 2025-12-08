@@ -31,10 +31,10 @@ public class VideoService {
     private IVideoFileRepository videoFileRepository;
 
     @Autowired
-    private IUserRepository userRepository;
+    IUserRepository userRepository;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;
+    PasswordEncoder passwordEncoder;
 
     @Autowired
     private ObjectMapper objectMapper;

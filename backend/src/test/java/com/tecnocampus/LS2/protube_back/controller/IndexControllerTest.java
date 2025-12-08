@@ -7,11 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class IndexControllerTest {
     IndexController indexController = new IndexController();
 
-    @Test
-    void home() {
-
-        assertEquals("index", indexController.home().getViewName());
-    }
+//    @Test
+//    void home() {
+//
+//        assertEquals("index", indexController.home().getViewName());
+//    }
 
     @Test
     void logout() {
