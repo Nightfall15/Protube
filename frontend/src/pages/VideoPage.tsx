@@ -59,18 +59,13 @@ export default function VideoPage() {
 
     //Call post with comment info
     axios
-      .post(`${getEnv().API_BASE_URL}/videos/${id}/comments`, null, {
-        params: {
-          author: user.username,
-          text: newComment.trim(),
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+      .post<Comment>(`${getEnv().API_BASE_URL}/videos/${id}/comments`, {
+        author: 'Anonymous', //To be turned into The UserTM
+        text: newComment.trim(),
       })
-      //Post success, refresh comment list with new comment
+      // Post success, refresh comment list with new comment
       .then((res) => {
-        setComments([...comments, res.data]);
+        setComments((prev) => [...prev, res.data as Comment]);
         setNewComment('');
       })
       //Catch any possible error
@@ -119,70 +114,8 @@ export default function VideoPage() {
     return isNaN(d.getTime()) ? raw : d.toLocaleString();
   };
 
-  function CommentItem({ comment, onReply }: { comment: Comment; onReply: (parentId: number, text: string) => void }) {
-    const { user } = useAuth();
-    const [replying, setReplying] = useState(false);
-    const [replyText, setReplyText] = useState('');
-
-    const sendReply = () => {
-      if (!replyText.trim()) return;
-      onReply(comment.id, replyText);
-      setReplyText('');
-      setReplying(false);
-    };
-
-    //html
-    return (
-      <li style={{ padding: '0.6rem 0', borderBottom: '1px solid #ddd' }}>
-        <strong>{comment.author}</strong>
-        <div>{comment.text}</div>
-        <small style={{ color: '#555' }}>{formatDate(comment.createdAt)}</small>
-
-        {/* reply button */}
-        <div>{user && <button onClick={() => setReplying(!replying)}>Reply</button>}</div>
-
-        {replying && (
-          <div style={{ marginTop: '0.5rem' }}>
-            <textarea
-              value={replyText}
-              onChange={(e) => setReplyText(e.target.value)}
-              placeholder="Write a reply..."
-              style={{ width: '100%', minHeight: 60 }}
-            />
-            <button onClick={sendReply}>Send Reply</button>
-          </div>
-        )}
-
-        {/* render child replies recursively */}
-        {comment.replies?.length > 0 && (
-          <ul style={{ listStyle: 'none', paddingLeft: '1.5rem', borderLeft: '2px solid #ccc' }}>
-            {comment.replies.map((r) => (
-              <CommentItem key={r.id} comment={r} onReply={onReply} />
-            ))}
-          </ul>
-        )}
-      </li>
-    );
-  }
-
-  const postReply = (parentId: number, text: string) => {
-    axios
-      .post(`${getEnv().API_BASE_URL}/videos/${id}/comments`, null, {
-        params: {
-          author: user!.username,
-          text,
-          parentId,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then(() => {
-        // reload full comment tree
-        return axios.get(`${getEnv().API_BASE_URL}/videos/${id}/comments`);
-      })
-      .then((res) => setComments(res.data));
-  };
+  // Ensure poster URL has a stable type: string | undefined
+  const posterUrl: string | undefined = video && video.thumbnailUrl ? String(video.thumbnailUrl) : undefined;
 
   return (
     <div style={{ padding: '1.5rem' }}>
@@ -193,21 +126,40 @@ export default function VideoPage() {
           {/* Video */}
           <h1>{video.title}</h1>
 
-          <video
-            controls
-            style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
-            src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
-            poster={video.thumbnailUrl}
-          />
+          {posterUrl ? (
+            <video
+              controls
+              style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
+              src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
+              poster={posterUrl}
+            />
+          ) : (
+            <video
+              controls
+              style={{ width: '100%', maxWidth: 900, marginTop: '1rem' }}
+              src={`${getEnv().API_BASE_URL}/videos/stream/${id}`}
+            />
+          )}
 
-          {/* Like button */}
-          <p>
-            <button style={{ marginTop: '0.5rem', padding: '0.4rem 1rem' }} onClick={toggleLike} disabled={!token}>
-              {hasLiked ? '❤ Liked!' : '❤ Like'} ({video.likes ?? 0})
-            </button>
-          </p>
-
-          <p style={{ marginTop: '1rem' }}>{video.description}</p>
+          {/* Description box: fixed max height with vertical scrollbar when overflowing */}
+          <div
+            style={{
+              marginTop: '1rem',
+              width: '100%',
+              maxWidth: 900,
+              border: '1px solid #ddd',
+              borderRadius: 6,
+              padding: '1rem',
+              background: '#fafafa',
+              color: '#000',
+              maxHeight: 200,
+              overflowY: 'auto',
+              boxSizing: 'border-box',
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {video.description}
+          </div>
 
           {/*Comments*/}
           <section style={{ marginTop: '2rem' }}>
